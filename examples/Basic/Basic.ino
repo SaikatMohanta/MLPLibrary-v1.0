@@ -21,3 +21,6 @@ void loop() {
   // ...
 }
 
+//In this example, I assumed a simplified MLP architecture with a single hidden layer. You can modify the library to fit your specific requirements, 
+//such as adding more hidden layers or changing the activation function. Keep in mind the limitations of the Arduino platform and consider optimizing the 
+//implementation further if needed.
