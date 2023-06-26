@@ -3,9 +3,9 @@
 
 #include "Arduino.h"
 
-#define MAX_INPUT_SIZE 15
-#define MAX_HIDDEN_SIZE 20
-#define MAX_OUTPUT_SIZE 15
+#define MAX_INPUT_SIZE 10
+#define MAX_HIDDEN_SIZE 10
+#define MAX_OUTPUT_SIZE 10
 
 class MLPLibrary {
 public:
