@@ -1,37 +1,36 @@
-#include "MLPLibrary.h"
+#include <MLPLibrary.h>
 
-MLPLibrary mlp(2, 3, 1, 0.1);  // Specify the input size, hidden size, output size, and learning rate
-int pirPin = 2;  // PIR sensor pin
+const int pirPin = 2;  // PIR sensor pin
+const int inputSize = 1;
+const int hiddenSize = 4;
+const int outputSize = 1;
+const float learningRate = 0.1;
+
+MLPLibrary mlp(inputSize, hiddenSize, outputSize, learningRate);
+float inputData[inputSize];
+float outputData[outputSize];
 
 void setup() {
-  Serial.begin(9600);
   pinMode(pirPin, INPUT);
-
-  // Initialize the MLP network
   mlp.initialize();
+  Serial.begin(9600);
 }
 
 void loop() {
-  // Read PIR sensor state
-  int pirState = digitalRead(pirPin);
+  // Read PIR sensor
+  int pirValue = digitalRead(pirPin);
 
-  // Prepare input array
-  float input[2];
-  input[0] = pirState;
-  input[1] = random(0, 100) / 100.0;  // Simulate additional sensor data
+  // Convert PIR sensor value to MLP input format (0 or 1)
+  inputData[0] = pirValue;
 
-  // Train the MLP network with the input and target
-  float target[1] = {pirState};
-  mlp.train(input, target);
+  // Predict using MLP
+  mlp.predict(inputData, outputData);
 
-  // Get the output from the trained network
-  float* output = mlp.getOutput();
-
-  // Print results
-  Serial.print("PIR state: ");
-  Serial.print(pirState);
-  Serial.print(" | Output: ");
-  Serial.println(output[0]);
+  // Check if intrusion detected
+  if (outputData[0] > 0.5) {
+    Serial.println("Intrusion Detected!");
+    // Perform necessary actions when intrusion is detected
+  }
 
   delay(1000);
 }
