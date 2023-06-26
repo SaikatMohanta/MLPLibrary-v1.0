@@ -1,5 +1,6 @@
 # MLPLibrary-v1.0
 A basic library to implement Artificial Neural Network with Multi Layer Perception architechture into your very own Arduino Boards. 
+__________________________________________________________________________________________________________________________________________________________________
 A Multi-Layer Perceptron (MLP) is a type of artificial neural network that consists of multiple layers of interconnected artificial neurons (perceptrons). It is a feedforward neural network, meaning the information flows in one direction, from the input layer to the output layer, without cycles or loops.
 
 Here's a step-by-step explanation of how an MLP works:
@@ -22,19 +23,35 @@ Forward Propagation: Once the MLP is trained, it can be used to make predictions
 
 MLPs have been widely used in various applications, including pattern recognition, image and speech recognition, time series analysis, and many more. They are powerful models capable of learning complex relationships in data, but they require careful design, parameter tuning, and training to achieve optimal performance.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-Certainly! Let's go through the functions defined in the custom MLPLibrary.h and understand their functionalities:
+The above library implements a simplified version of a Multi-Layer Perceptron (MLP) neural network in the Arduino IDE. Let's go through the key components and their functionality:
 
-1. `MLPLibrary(int inputSize, int hiddenSize, int outputSize, float learningRate)`: The constructor of the MLPLibrary class. It initializes the MLP architecture by specifying the sizes of the input layer (`inputSize`), hidden layer (`hiddenSize`), and output layer (`outputSize`). The `learningRate` parameter determines the rate at which the network learns during training.
+MLPLibrary class:
 
-2. `void initialize()`: This function initializes the weights and biases of the MLP network. It randomly assigns values to the weights and biases within a certain range.
+It represents the MLP network and contains methods for initialization, training, and prediction.
+Constructor:
 
-3. `void train(float input[MAX_INPUT_SIZE], float target[MAX_OUTPUT_SIZE])`: This function performs the training of the MLP network. It takes an input array (`input`) and a target array (`target`) as parameters. The MLP is fed with the input, and the weights and biases are updated using the backpropagation algorithm to minimize the difference between the network's output and the target values.
+It initializes the MLP network by specifying the input size, hidden layer size, output layer size, and learning rate.
+initialize() method:
 
-4. `void feedForward(float input[MAX_INPUT_SIZE])`: This function performs the forward propagation step of the MLP. It takes an input array (`input`) as a parameter and calculates the activations of the hidden layer and output layer using the current weights and biases.
+It initializes the weights and biases of the MLP network with random values between -1 and 1.
+The input-hidden layer weights are stored in inputHiddenWeights.
+The hidden-output layer weights are stored in hiddenOutputWeights.
+The hidden layer biases are stored in hiddenLayerBiases.
+The output layer biases are stored in outputLayerBiases.
+train() method:
 
-5. `void backpropagation(float target[MAX_OUTPUT_SIZE])`: This function performs the backpropagation step of the MLP. It takes a target array (`target`) as a parameter and updates the weights and biases of the network based on the calculated errors. The backpropagation algorithm calculates the error at each layer and adjusts the weights and biases accordingly.
+It performs a forward pass and backward pass to update the weights and biases based on the provided input and target.
+In the forward pass, the input values are propagated through the network to calculate the output values.
+In the backward pass, the errors are calculated for the output and hidden layers using the target values and the sigmoid activation function.
+The weights and biases are updated based on the errors and learning rate using the gradient descent algorithm.
+predict() method:
 
-6. `float* getOutput()`: This function returns a pointer to the output layer of the MLP network. It can be used to retrieve the calculated output values after feeding forward an input through the network.
+It performs a forward pass to predict the output values based on the provided input.
+The input values are propagated through the network, and the output values are calculated using the sigmoid activation function.
+sigmoid() function:
+
+It implements the sigmoid activation function, which transforms the input value into a range between 0 and 1.
+Overall, this library provides a simplified implementation of an MLP network suitable for simple tasks on Arduino boards. It can be used for basic classification or regression tasks by initializing, training, and predicting with the MLP network. However, please note that the implementation might not be as efficient or optimized as a full-scale MLP implementation, considering the resource constraints of the Arduino platform.
 
 Overall, the MLPLibrary class provides the basic functionality to initialize an MLP network, train it using a training dataset, and obtain the output of the network for a given input.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
