@@ -23,37 +23,35 @@ Forward Propagation: Once the MLP is trained, it can be used to make predictions
 
 MLPs have been widely used in various applications, including pattern recognition, image and speech recognition, time series analysis, and many more. They are powerful models capable of learning complex relationships in data, but they require careful design, parameter tuning, and training to achieve optimal performance.
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-The above library implements a simplified version of a Multi-Layer Perceptron (MLP) neural network in the Arduino IDE. Let's go through the key components and their functionality:
+Certainly! The above library implements a simplified version of a Multi-Layer Perceptron (MLP) neural network in the Arduino IDE. Let's go through the key components and their functionality:
 
-MLPLibrary class:
+1. `MLPLibrary` class:
+   - It represents the MLP network and contains methods for initialization, training, and prediction.
 
-It represents the MLP network and contains methods for initialization, training, and prediction.
-Constructor:
+2. Constructor:
+   - It initializes the MLP network by specifying the input size, hidden layer size, output layer size, and learning rate.
 
-It initializes the MLP network by specifying the input size, hidden layer size, output layer size, and learning rate.
-initialize() method:
+3. `initialize()` method:
+   - It initializes the weights and biases of the MLP network with random values between -1 and 1.
+   - The input-hidden layer weights are stored in `inputHiddenWeights`.
+   - The hidden-output layer weights are stored in `hiddenOutputWeights`.
+   - The hidden layer biases are stored in `hiddenLayerBiases`.
+   - The output layer biases are stored in `outputLayerBiases`.
 
-It initializes the weights and biases of the MLP network with random values between -1 and 1.
-The input-hidden layer weights are stored in inputHiddenWeights.
-The hidden-output layer weights are stored in hiddenOutputWeights.
-The hidden layer biases are stored in hiddenLayerBiases.
-The output layer biases are stored in outputLayerBiases.
-train() method:
+4. `train()` method:
+   - It performs a forward pass and backward pass to update the weights and biases based on the provided input and target.
+   - In the forward pass, the input values are propagated through the network to calculate the output values.
+   - In the backward pass, the errors are calculated for the output and hidden layers using the target values and the sigmoid activation function.
+   - The weights and biases are updated based on the errors and learning rate using the gradient descent algorithm.
 
-It performs a forward pass and backward pass to update the weights and biases based on the provided input and target.
-In the forward pass, the input values are propagated through the network to calculate the output values.
-In the backward pass, the errors are calculated for the output and hidden layers using the target values and the sigmoid activation function.
-The weights and biases are updated based on the errors and learning rate using the gradient descent algorithm.
-predict() method:
+5. `predict()` method:
+   - It performs a forward pass to predict the output values based on the provided input.
+   - The input values are propagated through the network, and the output values are calculated using the sigmoid activation function.
 
-It performs a forward pass to predict the output values based on the provided input.
-The input values are propagated through the network, and the output values are calculated using the sigmoid activation function.
-sigmoid() function:
+6. `sigmoid()` function:
+   - It implements the sigmoid activation function, which transforms the input value into a range between 0 and 1.
 
-It implements the sigmoid activation function, which transforms the input value into a range between 0 and 1.
 Overall, this library provides a simplified implementation of an MLP network suitable for simple tasks on Arduino boards. It can be used for basic classification or regression tasks by initializing, training, and predicting with the MLP network. However, please note that the implementation might not be as efficient or optimized as a full-scale MLP implementation, considering the resource constraints of the Arduino platform.
-
-Overall, the MLPLibrary class provides the basic functionality to initialize an MLP network, train it using a training dataset, and obtain the output of the network for a given input.
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
