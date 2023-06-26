@@ -8,86 +8,102 @@ MLPLibrary::MLPLibrary(int inputSize, int hiddenSize, int outputSize, float lear
 }
 
 void MLPLibrary::initialize() {
-  // Initialize the weights and biases randomly
-  randomSeed(analogRead(0));
-
-  for (int i = 0; i < numHidden; i++) {
-    hiddenBiases[i] = random(-100, 100) / 100.0;
-
-    for (int j = 0; j < numInputs; j++) {
-      hiddenWeights[i][j] = random(-100, 100) / 100.0;
-    }
-  }
-
-  for (int i = 0; i < numOutputs; i++) {
-    outputBiases[i] = random(-100, 100) / 100.0;
-
+  // Initialize the weights and biases with random values between -1 and 1
+  for (int i = 0; i < numInputs; i++) {
     for (int j = 0; j < numHidden; j++) {
-      outputWeights[i][j] = random(-100, 100) / 100.0;
+      inputHiddenWeights[i][j] = random(-100, 100) / 100.0;
     }
   }
-}
 
-void MLPLibrary::feedForward(float input[MAX_INPUT_SIZE]) {
-  // Calculate hidden layer activations
   for (int i = 0; i < numHidden; i++) {
-    float sum = hiddenBiases[i];
-    for (int j = 0; j < numInputs; j++) {
-      sum += hiddenWeights[i][j] * input[j];
-    }
-    hiddenLayer[i] = 1.0 / (1.0 + exp(-sum));
-  }
-
-  // Calculate output layer activations
-  for (int i = 0; i < numOutputs; i++) {
-    float sum = outputBiases[i];
-    for (int j = 0; j < numHidden; j++) {
-      sum += outputWeights[i][j] * hiddenLayer[j];
-    }
-    outputLayer[i] = 1.0 / (1.0 + exp(-sum));
-  }
-}
-
-void MLPLibrary::backpropagation(float target[MAX_OUTPUT_SIZE]) {
-  // Calculate output layer errors
-  float outputErrors[MAX_OUTPUT_SIZE];
-  for (int i = 0; i < numOutputs; i++) {
-    outputErrors[i] = (target[i] - outputLayer[i]) * outputLayer[i] * (1.0 - outputLayer[i]);
-  }
-
-  // Calculate hidden layer errors
-  float hiddenErrors[MAX_HIDDEN_SIZE];
-  for (int i = 0; i < numHidden; i++) {
-    float sum = 0.0;
     for (int j = 0; j < numOutputs; j++) {
-      sum += outputWeights[j][i] * outputErrors[j];
+      hiddenOutputWeights[i][j] = random(-100, 100) / 100.0;
     }
-    hiddenErrors[i] = sum * hiddenLayer[i] * (1.0 - hiddenLayer[i]);
+    hiddenLayerBiases[i] = random(-100, 100) / 100.0;
   }
 
-  // Update output weights and biases
   for (int i = 0; i < numOutputs; i++) {
-    for (int j = 0; j < numHidden; j++) {
-      outputWeights[i][j] += learningRate * outputErrors[i] * hiddenLayer[j];
-    }
-    outputBiases[i] += learningRate * outputErrors[i];
-  }
-
-  // Update hidden weights and biases
-  for (int i = 0; i < numHidden; i++) {
-    for (int j = 0; j < numInputs; j++) {
-      hiddenWeights[i][j] += learningRate * hiddenErrors[i] * input[j];
-    }
-    hiddenBiases[i] += learningRate * hiddenErrors[i];
+    outputLayerBiases[i] = random(-100, 100) / 100.0;
   }
 }
 
 void MLPLibrary::train(float input[MAX_INPUT_SIZE], float target[MAX_OUTPUT_SIZE]) {
-  feedForward(input);
-  backpropagation(target);
+  // Forward pass
+  for (int i = 0; i < numInputs; i++) {
+    inputLayer[i] = input[i];
+  }
+
+  for (int i = 0; i < numHidden; i++) {
+    float sum = 0.0;
+    for (int j = 0; j < numInputs; j++) {
+      sum += inputLayer[j] * inputHiddenWeights[j][i];
+    }
+    hiddenLayer[i] = sigmoid(sum + hiddenLayerBiases[i]);
+  }
+
+  for (int i = 0; i < numOutputs; i++) {
+    float sum = 0.0;
+    for (int j = 0; j < numHidden; j++) {
+      sum += hiddenLayer[j] * hiddenOutputWeights[j][i];
+    }
+    outputLayer[i] = sigmoid(sum + outputLayerBiases[i]);
+  }
+
+  // Backward pass
+  for (int i = 0; i < numOutputs; i++) {
+    outputLayerErrors[i] = (target[i] - outputLayer[i]) * outputLayer[i] * (1 - outputLayer[i]);
+  }
+
+  for (int i = 0; i < numHidden; i++) {
+    float sum = 0.0;
+    for (int j = 0; j < numOutputs; j++) {
+      sum += outputLayerErrors[j] * hiddenOutputWeights[i][j];
+    }
+    hiddenLayerErrors[i] = sum * hiddenLayer[i] * (1 - hiddenLayer[i]);
+  }
+
+  // Update weights and biases
+  for (int i = 0; i < numInputs; i++) {
+    for (int j = 0; j < numHidden; j++) {
+      inputHiddenWeights[i][j] += learningRate * hiddenLayerErrors[j] * inputLayer[i];
+    }
+  }
+
+  for (int i = 0; i < numHidden; i++) {
+    for (int j = 0; j < numOutputs; j++) {
+      hiddenOutputWeights[i][j] += learningRate * outputLayerErrors[j] * hiddenLayer[i];
+    }
+    hiddenLayerBiases[i] += learningRate * hiddenLayerErrors[i];
+  }
+
+  for (int i = 0; i < numOutputs; i++) {
+    outputLayerBiases[i] += learningRate * outputLayerErrors[i];
+  }
 }
 
-float* MLPLibrary::getOutput() {
-  return outputLayer;
+void MLPLibrary::predict(float input[MAX_INPUT_SIZE], float output[MAX_OUTPUT_SIZE]) {
+  // Forward pass
+  for (int i = 0; i < numInputs; i++) {
+    inputLayer[i] = input[i];
+  }
+
+  for (int i = 0; i < numHidden; i++) {
+    float sum = 0.0;
+    for (int j = 0; j < numInputs; j++) {
+      sum += inputLayer[j] * inputHiddenWeights[j][i];
+    }
+    hiddenLayer[i] = sigmoid(sum + hiddenLayerBiases[i]);
+  }
+
+  for (int i = 0; i < numOutputs; i++) {
+    float sum = 0.0;
+    for (int j = 0; j < numHidden; j++) {
+      sum += hiddenLayer[j] * hiddenOutputWeights[j][i];
+    }
+    output[i] = sigmoid(sum + outputLayerBiases[i]);
+  }
 }
 
+float MLPLibrary::sigmoid(float x) {
+  return 1.0 / (1.0 + exp(-x));
+}
